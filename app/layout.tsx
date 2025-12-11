@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import { Suspense } from "react"
 import "./globals.css"
 import { Providers } from "./providers"
 
@@ -45,7 +46,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        <Providers>{children}</Providers>
+        <Suspense fallback={null}>
+          <Providers>{children}</Providers>
+        </Suspense>
         <Analytics />
       </body>
     </html>

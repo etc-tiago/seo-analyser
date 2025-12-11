@@ -2,8 +2,9 @@ import { AnalyzePageClient } from "@/components/analyze-page"
 import { isLocale, translations } from "@/lib/i18n"
 import type { Metadata } from "next"
 
-export async function generateMetadata({ searchParams }: { searchParams?: { lang?: string } }): Promise<Metadata> {
-  const langParam = searchParams?.lang
+export async function generateMetadata(props: { searchParams: Promise<{ lang?: string }> }): Promise<Metadata> {
+  const resolved = await props.searchParams
+  const langParam = resolved?.lang
   const lang = isLocale(langParam) ? langParam : "en"
   const seo = translations[lang].seo
 
