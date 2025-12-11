@@ -85,10 +85,20 @@ Focus on:
     // Parse AI response
     const completionText = completion.choices[0]?.message?.content ?? ""
     const cleanedText = completionText
-      .replace(/```json\n?/g, "")
-      .replace(/```\n?/g, "")
+      .replace(/```json\s*/gi, "")
+      .replace(/```\s*/g, "")
       .trim()
-    const analysis = JSON.parse(cleanedText)
+
+    let analysis
+    try {
+      const start = cleanedText.indexOf("{")
+      const end = cleanedText.lastIndexOf("}")
+      const jsonSlice = start !== -1 && end !== -1 ? cleanedText.slice(start, end + 1) : cleanedText
+      analysis = JSON.parse(jsonSlice)
+    } catch (parseErr) {
+      console.error("[v0] JSON parse error:", parseErr, cleanedText)
+      return NextResponse.json({ error: "AI response parse error" }, { status: 500 })
+    }
 
     return NextResponse.json({
       success: true,
